@@ -1,7 +1,7 @@
 /**
  *  Copyright 2020 Markus Liljergren
  *
- *  Version: v0.8.2.0914b
+ *  Version: v0.8.2.0925b
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -64,6 +64,8 @@ metadata {
         command "toggle"
 
         fingerprint deviceJoinName: "Tuya Light Switch", profileId:"0104", endpointId:"01", inClusters:"0000,0003,0006", outClusters:"0019", model:"TS0011", manufacturer:"TUYATEC-j5khr9vo"
+
+        fingerprint model:"TS0601", manufacturer:"_TZE200_oisqyl4o", profileId:"0104", endpointId:"01", inClusters:"0000,0004,0005,EF00", outClusters:"0019,000A", application:"40"
 
         fingerprint model:"FNB56-ZSW01LX2.0", manufacturer:"FeiBit", profileId:"C05E", endpointId:"0B", inClusters:"0000,0004,0003,0006,0005,1000,0008", outClusters:"0019"
 
@@ -262,6 +264,11 @@ ArrayList<String> parse(String description) {
                     logging("MULTISTATE CLUSTER EVENT", 1)
                     sendlastCheckinEvent(minimumMinutesToRepeat=25)
                     break
+                case "EF00":
+                    logging("ON/OFF CATCHALL EF00 CLUSTER EVENT - description:${description} | parseMap:${msgMap}", 100)
+                    sendOnOffEvent(Integer.parseInt(msgMap['sourceEndpoint'], 16), Integer.parseInt(msgMap['data'].last(), 16) == 1)
+                    sendlastCheckinEvent(minimumMinutesToRepeat=25)
+                    break
                 case "8021":
                     logging("BIND RESPONSE CLUSTER EVENT", 1)
                     sendlastCheckinEvent(minimumMinutesToRepeat=25)
@@ -451,7 +458,7 @@ void bindOnOffForEndpoint(Integer endpoint) {
 private String getDriverVersion() {
     comment = "Works with Generic Switches (this includes many multi-relay ones, like Nue. Please report your fingerprints)"
     if(comment != "") state.comment = comment
-    String version = "v0.8.2.0914b"
+    String version = "v0.8.2.0925b"
     logging("getDriverVersion() = ${version}", 100)
     sendEvent(name: "driver", value: version)
     updateDataValue('driver', version)
