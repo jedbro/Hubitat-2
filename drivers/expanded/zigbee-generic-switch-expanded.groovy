@@ -419,6 +419,10 @@ void onOffCommand(Integer command) {
             logging("Sending command $command to cluster 0x0006 for Child deviceNetworkId: $child.deviceNetworkId", 100)
             cmd += [zigbeeCommand(getEndpointFromChildId(child.deviceNetworkId), 0x0006, command)[0]]
         }
+    } else if (getDeviceDataByName('model') == 'TS0601'){
+      String fullData = "00" + zigbee.convertToHexString(rand(256), 2) + "01" + "01" + "0001" + zigbee.convertToHexString(command, 2)
+      logging("Sending on/off to cluster EF00: " + command + "("+ fullData+")", 100)
+      cmd += zigbee.command(0xEF00, 0x00, fullData)
     } else {
         cmd += zigbeeCommand(0x0006, command)
     }
