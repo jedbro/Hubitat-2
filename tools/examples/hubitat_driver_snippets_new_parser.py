@@ -354,6 +354,7 @@ for ( r in result ) {
 }
 for ( r in result ) {
     if(r.value instanceof Map && (r.value.containsKey("Temperature") || 
+        r.value.containsKey("ProbeTemperature") ||
         r.value.containsKey("Humidity") || r.value.containsKey("Pressure") ||
         r.value.containsKey("Distance") || r.value.containsKey("Illuminance") ||
         r.value.containsKey("Gas") || r.value.containsKey("DewPoint"))) {
@@ -366,6 +367,11 @@ for ( r in result ) {
             logging("Temperature: $r.value.Temperature", 99)
             String c = String.valueOf((char)(Integer.parseInt("00B0", 16)));
             missingChild = callChildParseByTypeId(r.key, [[name: "temperature", value: r.value.Temperature, unit: "$c${location.temperatureScale}"]], missingChild)
+        } else if (r.value.containsKey("ProbeTemperature")) {
+            //Probably need this line below
+            logging("ProbeTemperature: $r.value.ProbeTemperature", 99)
+            String c = String.valueOf((char)(Integer.parseInt("00B0", 16)));
+            missingChild = callChildParseByTypeId(r.key, [[name: "temperature", value: r.value.ProbeTemperature, unit: "$c${location.temperatureScale}"]], missingChild)
         }
         if (r.value.containsKey("DewPoint")) {
             //Probably need this line below

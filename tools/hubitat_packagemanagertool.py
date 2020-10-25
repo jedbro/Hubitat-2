@@ -123,14 +123,15 @@ class HubitatPackageManagerPackage:
             else:
                 self.manifestDict['dateReleased'] = dateReleased
 
-    def addApp(self, name, version, namespace, location, required, oauth, internalId, id=None):
+    def addApp(self, name, version, namespace, location, required, oauth, internalId, alternateNames=[], id=None):
         newApp = {
             "id": id,
             "internalId": internalId,
             "name": name,
+            "namespace": namespace,
+            "alternateNames": alternateNames,
             "version": version,
             "betaVersion": version,
-            "namespace": namespace,
             "location": location,
             "betaLocation": location,
             "required": required,
@@ -147,14 +148,15 @@ class HubitatPackageManagerPackage:
     def clearApps(self):
         self.manifestDict['apps'] = []
 
-    def addDriver(self, name, version, namespace, location, required, internalId, id=None):
+    def addDriver(self, name, version, namespace, location, required, internalId, alternateNames=[], id=None):
         newDriver = {
             "id": id,
             "internalId": internalId,
             "name": name,
+            "namespace": namespace,
+            "alternateNames": alternateNames,
             "version": version,
             "betaVersion": version,
-            "namespace": namespace,
             "location": location,
             "betaLocation": location,
             "required": required

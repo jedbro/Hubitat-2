@@ -219,8 +219,8 @@ def getDefaultParentMetadataPreferences(includeCSS=False):
         includedCSS = " + styling_getDefaultCSS()"
     return """
 // Default Parent Preferences
-input(name: "runReset", description: styling_addDescriptionDiv("For details and guidance, see the release thread in the <a href=\\\"https://community.hubitat.com/t/release-tasmota-7-x-firmware-with-hubitat-support/29368\\\"> Hubitat Forum</a>. For settings marked as ADVANCED, make sure you understand what they do before activating them. If settings are not reflected on the device, press the Configure button in this driver. Also make sure all settings really are saved and correct."), title: styling_addTitleDiv("Settings"), displayDuringSetup: false, type: "paragraph", element: "paragraph")
-input(name: "debugLogging", type: "bool", title: styling_addTitleDiv("Enable debug logging"), description: "" """ + includedCSS + """, defaultValue: false, submitOnChange: true, displayDuringSetup: false, required: false)
+input(name: "runReset", description: styling_addDescriptionDiv("For details and guidance, see the <a href=\\\"https://oh-lalabs.com\\\">Oh-La Labs website</a>. For settings marked as ADVANCED, make sure you understand what they do before activating them. If settings are not reflected on the device, press the Configure button in this driver. Also make sure all settings really are saved and correct."), title: styling_addTitleDiv("Settings"), displayDuringSetup: false, type: "paragraph", element: "paragraph")
+input(name: "debugLogging", type: "bool", title: styling_getLogo() + styling_addTitleDiv("Enable debug logging"), description: "" """ + includedCSS + """, defaultValue: false, submitOnChange: true, displayDuringSetup: false, required: false)
 input(name: "infoLogging", type: "bool", title: styling_addTitleDiv("Enable info logging"), description: "", defaultValue: true, submitOnChange: true, displayDuringSetup: false, required: false)
 """
 
@@ -236,7 +236,7 @@ input(name: "runReset", description: styling_addDescriptionDiv("DISABLE BEFORE R
 """
     return """
 // Default Preferences""" + includedRunReset + """
-input(name: "debugLogging", type: "bool", title: styling_addTitleDiv("Enable debug logging"), description: "" """ + includedCSS + """, defaultValue: false, submitOnChange: true, displayDuringSetup: false, required: false)
+input(name: "debugLogging", type: "bool", title: styling_getLogo() + styling_addTitleDiv("Enable debug logging"), description: "" """ + includedCSS + """, defaultValue: false, submitOnChange: true, displayDuringSetup: false, required: false)
 input(name: "infoLogging", type: "bool", title: styling_addTitleDiv("Enable info logging"), description: "", defaultValue: true, submitOnChange: true, displayDuringSetup: false, required: false)
 """
 

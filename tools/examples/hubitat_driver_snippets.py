@@ -38,7 +38,7 @@ from hubitat_codebuilder import HubitatCodeBuilderError
 def getHeaderLicense(driverVersionSpecial=None):
     driverVersionActual = getDriverVersion(driverVersionSpecial)
     return """/**
- *  Copyright 2020 Markus Liljergren
+ *  Copyright 2020 Markus Liljergren (https://oh-lalabs.com)
  *
  *  Version: """ + driverVersionActual + """
  *
@@ -223,8 +223,10 @@ tasmota_getAction(tasmota_getCommandString("TelePeriod", "${tasmota_getTelePerio
 tasmota_getAction(tasmota_getCommandString("SetOption113", "1")) // Hubitat Enabled
 // Disabling Emulation so that we don't flood the logs with upnp traffic
 tasmota_getAction(tasmota_getCommandString("Emulation", "2")) // Hue Emulation Enabled, REQUIRED for device discovery
+tasmota_getAction(tasmota_getCommandString("HttpHookHost", device.hub.getDataValue("localIP")))
 tasmota_getAction(tasmota_getCommandString("HubitatHost", device.hub.getDataValue("localIP")))
 logging("HubitatPort: ${device.hub.getDataValue("localSrvPortTCP")}", 1)
+tasmota_getAction(tasmota_getCommandString("HttpHookPort", device.hub.getDataValue("localSrvPortTCP")))
 tasmota_getAction(tasmota_getCommandString("HubitatPort", device.hub.getDataValue("localSrvPortTCP")))
 tasmota_getAction(tasmota_getCommandString("FriendlyName1", device.displayName.take(32))) // Set to a maximum of 32 characters
 // We need the Backlog inter-command delay to be 20ms instead of 200...

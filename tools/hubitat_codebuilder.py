@@ -224,6 +224,9 @@ class HubitatCodeBuilder:
             definition_dict = yaml.load(
                 ('{'+ds[1:-3]+' }').replace(':', ': '), Loader=yaml.FullLoader)
             self.log.debug(definition_dict)
+            #self._input_groovy_file
+            if(self._input_groovy_file != None):
+                definition_dict['filename'] = self._input_groovy_file
             if(self._alternate_name != None):
                 definition_dict['name'] = self._alternate_name
             if(self._alternate_namespace != None):
@@ -419,7 +422,7 @@ class HubitatCodeBuilder:
 
         self.log.debug('Expanding "' + str(input_groovy_file) +
                        '" to "' + str(output_groovy_file) + '"...')
-
+        self._input_groovy_file = str(input_groovy_file.stem)
         self._alternate_output_filename = alternate_output_filename
         self._alternate_name = alternate_name
         self._alternate_namespace = alternate_namespace

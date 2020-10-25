@@ -141,17 +141,17 @@ def main():
     log.debug(hhs_2.login())
     log.debug(hhs_3.login())
 
-    default_version = "v1.0.4.MMDDTb"
-    default_zigbee_version = "v0.8.2.MMDDb"
-    default_zigbee_version_sonoff = "v0.6.2.MMDDb"
+    default_version = "v1.1.0.MMDDTb"
+    default_zigbee_version = "v1.0.0.MMDDb"
+    default_zigbee_version_sonoff = "v1.0.0.MMDDb"
     version_suffix = "b"
     checksum_file_suffix = None
     remove_comments = True
     is_beta = True
     if(branch_name == 'release'):
-        default_version = "v1.0.3.MMDDT"
-        default_zigbee_version = "v0.8.1.MMDD"
-        default_zigbee_version_sonoff = "v0.6.1.MMDD"
+        default_version = "v1.1.0.MMDDT"
+        default_zigbee_version = "v1.0.0.MMDD"
+        default_zigbee_version_sonoff = "v1.0.0.MMDD"
         version_suffix = ""
         checksum_file_suffix = "release"
         is_beta = False
@@ -163,7 +163,7 @@ def main():
     t4he_pkg = HubitatPackageManagerPackage("Tasmota for Hubitat Elevation", "Integrations",
                                             "https://raw.githubusercontent.com/markus-li/Hubitat/release/packageManifest.json",
                                             "Allows you to integrate Tasmota-based devices with Hubitat Elevation.", isBeta=is_beta,
-                                            documentationLink="https://github.com/markus-li/Hubitat/wiki",
+                                            documentationLink="https://oh-lalabs.com/docs/t4he",
                                             communityLink="https://community.hubitat.com/t/release-tasmota-for-he-auto-detecting-tasmota-drivers-tasmota-firmware-7-x-8-x-for-he-for-use-with-tuya-sonoff-and-other-esp-devices/39322?u=markus",
                                             betaLocation="https://raw.githubusercontent.com/markus-li/Hubitat/development/packageManifestBeta.json")
 
@@ -461,8 +461,9 @@ def main():
         # Virtual
         {'id': 962, 'file': 'javascript-injection-driver.groovy',
             'version': 'v0.1.0.MMDDb'},
-        {'id': 1890, 'file': 'smartly-injection-driver.groovy', 'publish': True,
-            'version': 'v0.2.2.MMDD' + version_suffix, 'comment': 'Enables Smartly JavaScript on the Dashboard!'},
+        {'id': 1890, 'file': 'smartly-inject.groovy', 'publish': True, 'alternateNames': {'name': 'Smartly Injector', 'namespace': 'markus-li'},
+            'version': 'v2.0.0.MMDD' + version_suffix, 'comment': 'Enables Smartly JavaScript features in the Dashboard!'},
+        {'id': 1922, 'file': 'virtual-valve.groovy', 'version': 'v0.1.0.MMDDb'},
 
         # The following can be overwritten:
     ]
@@ -529,6 +530,12 @@ def main():
     driver_files_active = [
 
 
+        
+        {'id': 1922}, # Virtual Valve
+
+        {'id': 1154},  # Xiaomi/Aqara Motion Sensors
+
+
         {'id': 1890},  # Smartly Injection
         {'id': 1858},  # IKEA On/Off Button
 
@@ -567,7 +574,7 @@ def main():
         {'id': 1378},  # Aqara Vibration Sensor
         {'id': 1345},  # Xiaomi/Aqara Temperature/Humidity Sensor
         {'id': 1153},  # Xiaomi/Aqara Contact Sensors
-        {'id': 1154},  # Xiaomi/Aqara Motion Sensors
+        
         # {'id': 1667}, # Aqara Cube
 
         # Zigbee - Tuya
@@ -737,6 +744,8 @@ def main():
     for d in sorted_driver_list:
         # Get all Info
         newD = d.copy()
+        if(not 'alternateNames' in newD):
+            newD['alternateNames'] = []
         # Add the rest of what we know about this ID:
         for d_info in driver_files_active:
             if (d['id'] == d_info['id']):
@@ -755,7 +764,7 @@ def main():
             #log.debug('d_info 2: {}'.format(d_info))
 
             t4he_pkg.addDriver(d['name'], newD['version'], newD['namespace'],
-                               base_raw_repo_url + newD['file'], newD['required'], newD['id'], id=None)
+                               base_raw_repo_url + newD['file'], newD['required'], newD['id'], alternateNames=newD['alternateNames'], id=None)
 
             # We will modify these later, make sure we have COPIES
             if(newD['name'].startswith('Generic')):
@@ -768,8 +777,9 @@ def main():
                 child_drivers.append(newD.copy())
         if(d['name'].startswith('Zigbee - ')):
             newD['name'] = newD['name'][9:]
+            newD['alternateNames'].append({'name': newD['name'], 'namespace': 'markus-li'})
             if(not 'documentationLink' in newD):
-                newD['documentationLink'] = None
+                newD['documentationLink'] = 'https://oh-lalabs.com/docs/' + newD['filestem']
             if(not 'publish' in newD):
                 newD['publish'] = True
             if(not 'communityLink' in newD):
@@ -783,11 +793,11 @@ def main():
                                                           ".json",
                                                           newD['comment'], isBeta=is_beta,
                                                           documentationLink=newD['documentationLink'],
-                                                          communityLink=newD['documentationLink'],
+                                                          communityLink=newD['communityLink'],
                                                           betaLocation="https://raw.githubusercontent.com/markus-li/Hubitat/development/packages/" + newD['filestem'] + "-beta.json")
 
                 zigbee_pkg.addDriver(newD['nameFull'], newD['version'], newD['namespace'],
-                                     base_raw_repo_url + newD['file'], True, newD['id'], id=None)
+                                     base_raw_repo_url + newD['file'], True, newD['id'], alternateNames=newD['alternateNames'], id=None)
 
                 pm.addPackage(zigbee_pkg)
                 print("Zigbee package: " + newD['nameFull'])
@@ -803,11 +813,11 @@ def main():
         if(d['name'].startswith('Smartly')):
             newD['name'] = newD['name']
             if(not 'documentationLink' in newD):
-                newD['documentationLink'] = None
+                newD['documentationLink'] = 'https://oh-lalabs.com/docs/smartly-inject'
             if(not 'publish' in newD):
                 newD['publish'] = True
             if(not 'communityLink' in newD):
-                newD['communityLink'] = 'https://community.hubitat.com/t/'
+                newD['communityLink'] = 'https://oh-lalabs.com/l/smartly-inject-community'
             print("Smartly package: " + str(newD))
 
             if(newD['publish'] == True):
@@ -817,11 +827,11 @@ def main():
                                                            ".json",
                                                            newD['comment'], isBeta=is_beta,
                                                            documentationLink=newD['documentationLink'],
-                                                           communityLink=newD['documentationLink'],
+                                                           communityLink=newD['communityLink'],
                                                            betaLocation="https://raw.githubusercontent.com/markus-li/Hubitat/development/packages/" + newD['filestem'] + "-beta.json")
 
                 smartly_pkg.addDriver(newD['nameFull'], newD['version'], newD['namespace'],
-                                      base_raw_repo_url + newD['file'], True, newD['id'], id=None)
+                                      base_raw_repo_url + newD['file'], True, newD['id'], alternateNames=newD['alternateNames'], id=None)
                 files = ['smartly.js',
                          'smartly-injected.min.css', 'usermode.json']
                 for f in files:
@@ -1093,7 +1103,7 @@ def main():
 
     repo_private_path = "."
     repo_public_path = "../Hubitat-Public"
-    repo_internal_path = "../Hubitat-Internal"
+    repo_internal_path = "../he-prerelease-builds"
     repo_smartly_typescript_path = "../smartly-typescript"
 
     import subprocess
@@ -1118,13 +1128,15 @@ def main():
 
         # Public Drivers
         repo_tool.copy_files_by_wildcard(
-            repo_private_path + "/drivers/expanded/smartly-injection-driver-expanded.groovy", repo_public_path + "/drivers/expanded")
+            repo_private_path + "/drivers/expanded/smartly-inject-expanded.groovy", repo_public_path + "/drivers/expanded")
         repo_tool.copy_files_by_wildcard(
             repo_private_path + "/drivers/expanded/javascript-injection-driver-expanded.groovy", repo_public_path + "/drivers/expanded")
         repo_tool.copy_files_by_wildcard(
             repo_private_path + "/drivers/expanded/tasmota-*-expanded.groovy", repo_public_path + "/drivers/expanded")
         repo_tool.copy_files_by_wildcard(
             repo_private_path + "/drivers/expanded/zigbee-*-expanded.groovy", repo_public_path + "/drivers/expanded")
+        repo_tool.copy_files_by_wildcard(
+            repo_private_path + "/drivers/expanded/virtual-*-expanded.groovy", repo_public_path + "/drivers/expanded")
 
         # Public Files
         repo_tool.copy_files_by_wildcard(
@@ -1142,17 +1154,44 @@ def main():
         if(repo_private.head.shorthand == "development"):
             # Internal Drivers
             repo_tool.copy_files_by_wildcard(
-                repo_private_path + "/drivers/expanded/zigbee-*-expanded.groovy", repo_internal_path + "/drivers")
+                repo_private_path + "/drivers/expanded/*-expanded.groovy", repo_internal_path + "/drivers/expanded")
+
+            # Public Apps
             repo_tool.copy_files_by_wildcard(
-                repo_private_path + "/private/drivers/expanded/zigbee-aqara-bulb-expanded.groovy", repo_internal_path + "/drivers")
+                repo_private_path + "/apps/expanded/tasmota-device-manager-expanded.groovy", repo_internal_path + "/apps/expanded")
+
+            # App Repo Manifests
+            repo_tool.copy_files_by_wildcard(
+                repo_private_path + "/packages/*.json", repo_internal_path + "/packages")
+            repo_tool.copy_files_by_wildcard(
+                repo_private_path + "/packageManifest.json", repo_internal_path + "/packages/t4he.json")
+            repo_tool.copy_files_by_wildcard(
+                repo_private_path + "/packageManifestBeta.json", repo_internal_path + "/packages/t4he-beta.json")
+            repo_tool.copy_files_by_wildcard(
+                repo_private_path + "/repository.json", repo_internal_path)
+
+            # Public Files
+            repo_tool.copy_files_by_wildcard(
+                repo_smartly_typescript_path + "/dist/*.*", repo_internal_path + "/assets")
+            repo_tool.copy_files_by_wildcard(
+                repo_smartly_typescript_path + "/injection/dist/usermode.json", repo_internal_path + "/assets")
+
+            repo_tool.copy_files_by_wildcard(
+                repo_smartly_typescript_path + "/dist/smartly.js", repo_internal_path + "/assets/uuid-version/0f211437-fff7-592d-bd7d-4c0524cfeeb7-smartly.js")
+            repo_tool.copy_files_by_wildcard(
+                repo_smartly_typescript_path + "/dist/smartly-injected.min.css", repo_internal_path + "/assets/uuid-version/a08eec5a-f464-51de-bd7c-5a9b622676d7-smartly-injected.min.css")
+            repo_tool.copy_files_by_wildcard(
+                repo_smartly_typescript_path + "/injection/dist/usermode.json", repo_internal_path + "/assets/uuid-version/3e258ced-82e0-5387-90c2-aa78743abff5-usermode.json")
+            #repo_tool.copy_files_by_wildcard(
+            #    repo_private_path + "/private/drivers/expanded/zigbee-aqara-bulb-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-aqara-vibration-sensor-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-aqara-water-leak-sensor-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-xiaomi-aqara-contact-sensor-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-xiaomi-aqara-motion-sensor-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-xiaomi-aqara-opple-button-switch-remote-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-xiaomi-aqara-temperature-humidity-expanded.groovy", repo_internal_path + "/drivers")
-            repo_tool.copy_files_by_wildcard(
-                repo_private_path + "/private/drivers/expanded/zigbee-xiaomi-aqara-plug-outlet-expanded.groovy", repo_internal_path + "/drivers")
+            #repo_tool.copy_files_by_wildcard(
+            #    repo_private_path + "/private/drivers/expanded/zigbee-xiaomi-aqara-plug-outlet-expanded.groovy", repo_internal_path + "/drivers")
 
         # Public Apps
         repo_tool.copy_files_by_wildcard(
