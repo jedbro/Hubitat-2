@@ -1211,7 +1211,9 @@ def main():
         repo_tool.copy_files_by_wildcard(
             repo_private_path + "/packageManifestBeta.json", repo_public_path)
         repo_tool.copy_files_by_wildcard(
-            repo_private_path + "/packageManifestBeta.json", repo_public_path + "/packages/t4he-beta.json")
+            repo_private_path + "/packages/smartly-inject.json", repo_public_path + "/packages/smartly-injection-driver.json")
+        repo_tool.copy_files_by_wildcard(
+            repo_private_path + "/packages/smartly-inject-beta.json", repo_public_path + "/packages/smartly-injection-driver-beta.json")
         repo_tool.copy_files_by_wildcard(
             repo_private_path + "/repository.json", repo_public_path)
 
