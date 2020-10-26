@@ -461,7 +461,7 @@ def main():
         # Virtual
         {'id': 962, 'file': 'javascript-injection-driver.groovy',
             'version': 'v0.1.0.MMDDb'},
-        {'id': 1890, 'file': 'smartly-inject.groovy', 'publish': True, 'alternateNames': {'name': 'Smartly Injector', 'namespace': 'markus-li'},
+        {'id': 1890, 'file': 'smartly-inject.groovy', 'publish': True, 'alternateNames': [{'name': 'Smartly Injector', 'namespace': 'markus-li'}],
             'version': 'v2.0.0.MMDD' + version_suffix, 'comment': 'Enables Smartly JavaScript features in the Dashboard!'},
         {'id': 1922, 'file': 'virtual-valve.groovy', 'version': 'v0.1.0.MMDDb'},
 
