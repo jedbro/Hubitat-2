@@ -16,6 +16,8 @@ import shutil
 import pygit2
 import logging
 import os
+from os.path import basename
+import shutil
 
 log = logging.getLogger(__name__)
 
@@ -41,3 +43,14 @@ def copy_files_by_wildcard(source_path, target_path):
                 log.warn('Creating head folder: ' + head)
                 os.makedirs(head)
         shutil.copy(file, target_path)
+
+def zipFolder(root_path, base_dir, target_file):
+    shutil.make_archive(target_file, 'zip', root_path, base_dir)
+    # with ZipFile(target_file, 'w') as zipObj:
+    #   # Iterate over all the files in directory
+    #   for folderName, subfolders, filenames in os.walk(source_path):
+    #       for filename in filenames:
+    #           #create complete filepath of file in directory
+    #           filePath = os.path.join(folderName, filename)
+    #           # Add file to zip
+    #           zipObj.write(filePath, basename(filePath))

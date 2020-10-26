@@ -1151,6 +1151,8 @@ def main():
         repo_tool.copy_files_by_wildcard(
             repo_smartly_typescript_path + "/injection/dist/usermode.json", repo_public_path + "/assets/uuid-version/3e258ced-82e0-5387-90c2-aa78743abff5-usermode.json")
 
+        repo_tool.zipFolder(repo_public_path + "/assets/", "uuid-version", repo_public_path + "/assets/uuid-version")  # The extension should NOT be specified!
+
         if(repo_private.head.shorthand == "development"):
             # Internal Drivers
             repo_tool.copy_files_by_wildcard(
@@ -1182,6 +1184,8 @@ def main():
                 repo_smartly_typescript_path + "/dist/smartly-injected.min.css", repo_internal_path + "/assets/uuid-version/a08eec5a-f464-51de-bd7c-5a9b622676d7-smartly-injected.min.css")
             repo_tool.copy_files_by_wildcard(
                 repo_smartly_typescript_path + "/injection/dist/usermode.json", repo_internal_path + "/assets/uuid-version/3e258ced-82e0-5387-90c2-aa78743abff5-usermode.json")
+
+            repo_tool.zipFolder(repo_internal_path + "/assets/", "uuid-version", repo_internal_path + "/assets/uuid-version")  # The extension should NOT be specified!
             #repo_tool.copy_files_by_wildcard(
             #    repo_private_path + "/private/drivers/expanded/zigbee-aqara-bulb-expanded.groovy", repo_internal_path + "/drivers")
             #repo_tool.copy_files_by_wildcard(repo_private_path + "/private/drivers/expanded/zigbee-aqara-vibration-sensor-expanded.groovy", repo_internal_path + "/drivers")
